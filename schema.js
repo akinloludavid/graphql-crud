@@ -7,9 +7,13 @@ const schema = buildSchema(`
     course(id:Int!):Course
     courses(topic:String):[Course]
   }
+
   type Mutation{
     updateCourse(id:Int!, topic:String!):Course
+    addNewCourse(title:String!, author:String!, description:String!, topic:String!):[Course]
+    deleteCourse(id:Int!):[Course]
   }
+
   type Course {
     id:Int
     title:String 
@@ -56,20 +60,43 @@ const getAuthors = ({author})=>{
   return coursesData.filter(course=> course.author === author)
 }
 
+const addNewCourse =({title, author, description, topic})=>{
+  let args = {}
+   args.title = title
+   args.author = author 
+   args.topic = topic
+   args.description = description 
+  args.id = coursesData.length+1;
+  coursesData.push(args)
+  return coursesData
+}
+
 const updateCourse = ({id, topic})=>{
   coursesData.map(course =>{
     if(course.id ===id){
-      course.topic ===topic 
+      course.topic =topic 
       return course
     }
   })
+  
+  return coursesData.filter(course =>course.id === id)[0]
 }
 
+
+const deleteCourse = ({id})=>{
+  const course = coursesData.filter(c=>c.id===id)[0]
+  let idx = coursesData.indexOf(course)
+  coursesData.splice(idx,1)
+  return coursesData
+
+}
 const root = {
   course:getCourse,
   courses:getCourses,
   authors:getAuthors,
-  update:updateCourse,
+  updateCourse:updateCourse,
+  addNewCourse:addNewCourse,
+  deleteCourse:deleteCourse,
   allCourses: coursesData
 
 }
