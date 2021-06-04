@@ -1,12 +1,12 @@
 const express =  require('express')
 const {graphqlHTTP} = require('express-graphql');
 const {root, schema} = require('./schema');
+const betterSchema = require('./schema/betterSchema')
 const app= express();
 
 app.use('/graphql',
   graphqlHTTP({
-    schema:schema,
-    rootValue:root,
+    schema:betterSchema,
     graphiql:true
   })
 )
